@@ -30,57 +30,20 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
-// Types
-interface Movie {
-  id: string;
-  title: string;
-  genre: string;
-  duration: string;
-  rating: string;
-  banner: string;
-  description: string;
-  showtimes: { id: string; time: string }[];
-}
-
-interface Seat {
-  id: string;
-  row: string;
-  number: number;
-  type: 'Parkett' | 'Luxus' | 'Loge';
-  price: number;
-  booked: boolean;
-}
-
-interface Booking {
-  id: string;
-  movieId: string;
-  movieTitle: string;
-  showtimeId: string;
-  showtime: string;
-  date: string;
-  seats: string[];
-  customerName: string;
-  customerEmail: string;
-  ticketType: 'Standard' | 'Student';
-  paymentMethod: 'Stripe' | 'PayPal' | 'GooglePay' | 'ApplePay';
-  subtotal: number;
-  discount: number;
-  total: number;
-  qrCodeUrl: string;
-  timestamp: string;
-}
-
-interface ChatMessage {
-  id: string;
-  role: "user" | "bot";
-  content: string;
-  timestamp: Date;
-  modelUsed?: string;
-}
+import { Movie, Seat, Booking, ChatMessage } from "./types";
+import { 
+  getOfflineMovies, 
+  getOfflineSeats, 
+  bookOfflineSeats, 
+  createOfflineBooking, 
+  getOfflineBooking, 
+  getOfflineChatResponse 
+} from "./utils/offlineDb";
 
 export default function App() {
   // State
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [isOfflineMode, setIsOfflineMode] = useState(false);
   const [loadingMovies, setLoadingMovies] = useState(true);
   const [copied, setCopied] = useState(false);
   
@@ -141,6 +104,10 @@ export default function App() {
     try {
       setLoadingMovies(true);
       const res = await fetch("/api/movies");
+      const contentType = res.headers.get("content-type");
+      if (!res.ok || !contentType || !contentType.includes("application/json")) {
+        throw new Error("Server response is not valid JSON");
+      }
       const data = await res.json();
       setMovies(data);
       if (data.length > 0) {
@@ -148,7 +115,14 @@ export default function App() {
         setSelectedShowtime(data[0].showtimes[0]);
       }
     } catch (e) {
-      console.error("Fehler beim Laden der Filme:", e);
+      console.warn("API Server not available, falling back to client-only mode on Vercel:", e);
+      setIsOfflineMode(true);
+      const offlineMovies = getOfflineMovies();
+      setMovies(offlineMovies);
+      if (offlineMovies.length > 0) {
+        setSelectedMovie(offlineMovies[0]);
+        setSelectedShowtime(offlineMovies[0].showtimes[0]);
+      }
     } finally {
       setLoadingMovies(false);
     }
@@ -165,13 +139,23 @@ export default function App() {
     try {
       setLoadingSeats(true);
       setSelectedSeats([]);
+      if (isOfflineMode) {
+        const seats = getOfflineSeats(movieId, showtimeId);
+        setSeatMap(seats);
+        return;
+      }
       const res = await fetch(`/api/movies/${movieId}/seats/${showtimeId}`);
       if (res.ok) {
         const data = await res.json();
         setSeatMap(data.seats);
+      } else {
+        const seats = getOfflineSeats(movieId, showtimeId);
+        setSeatMap(seats);
       }
     } catch (e) {
-      console.error("Fehler beim Laden des Sitzplans:", e);
+      console.error("Fehler beim Laden des Sitzplans, weiche aus auf Offline-Sitzplan:", e);
+      const seats = getOfflineSeats(movieId, showtimeId);
+      setSeatMap(seats);
     } finally {
       setLoadingSeats(false);
     }
@@ -212,13 +196,49 @@ export default function App() {
 
     try {
       setSubmittingBooking(true);
+      
+      const bookingData = {
+        movieId: selectedMovie.id,
+        showtimeId: selectedShowtime.id,
+        showtime: selectedShowtime.time,
+        movieTitle: selectedMovie.title,
+        date: "Heute, " + new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }),
+        seats: selectedSeats,
+        customerName,
+        customerEmail,
+        ticketType,
+        paymentMethod,
+        subtotal,
+        discount,
+        total
+      };
+
+      if (isOfflineMode) {
+        // Process offline simulation
+        const booking = createOfflineBooking(bookingData);
+        bookOfflineSeats(selectedMovie.id, selectedShowtime.id, selectedSeats);
+        setBookingSuccess(booking);
+        fetchSeats(selectedMovie.id, selectedShowtime.id);
+        
+        setChatMessages(prev => [
+          ...prev,
+          {
+            id: `booking-${booking.id}`,
+            role: "bot",
+            content: `Vielen Dank für Ihre Buchung, ${customerName}! Ich habe Ihre ${selectedSeats.length} Tickets für "${selectedMovie.title}" (${selectedShowtime.time}) erfolgreich reserviert. Ihre Buchungsnummer lautet ${booking.id}. Sie können das Ticket hier direkt verifizieren lassen!`,
+            timestamp: new Date()
+          }
+        ]);
+        return;
+      }
+
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           movieId: selectedMovie.id,
           showtimeId: selectedShowtime.id,
-          date: "Heute, " + new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }),
+          date: bookingData.date,
           seats: selectedSeats,
           customerName,
           customerEmail,
@@ -248,8 +268,36 @@ export default function App() {
         alert("Buchungsfehler: " + err.error);
       }
     } catch (error) {
-      console.error(error);
-      alert("Verbindungsfehler beim Verarbeiten der Ticketbuchung.");
+      console.warn("Zahlungsverbindungsfehler, weiche auf lokale Buchungssimulation aus:", error);
+      // Fallback booking
+      const booking = createOfflineBooking({
+        movieId: selectedMovie.id,
+        showtimeId: selectedShowtime.id,
+        showtime: selectedShowtime.time,
+        movieTitle: selectedMovie.title,
+        date: "Heute, " + new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }),
+        seats: selectedSeats,
+        customerName,
+        customerEmail,
+        ticketType,
+        paymentMethod,
+        subtotal,
+        discount,
+        total
+      });
+      bookOfflineSeats(selectedMovie.id, selectedShowtime.id, selectedSeats);
+      setBookingSuccess(booking);
+      fetchSeats(selectedMovie.id, selectedShowtime.id);
+      
+      setChatMessages(prev => [
+        ...prev,
+        {
+          id: `booking-${booking.id}`,
+          role: "bot",
+          content: `Vielen Dank für Ihre Buchung, ${customerName}! Ich habe Ihre ${selectedSeats.length} Tickets für "${selectedMovie.title}" (${selectedShowtime.time}) erfolgreich offline reserviert. Ihre Buchungsnummer lautet ${booking.id}. Sie können das Ticket hier direkt verifizieren lassen!`,
+          timestamp: new Date()
+        }
+      ]);
     } finally {
       setSubmittingBooking(false);
     }
@@ -262,15 +310,36 @@ export default function App() {
       setSearchingVerification(true);
       setVerificationError("");
       setVerifiedBooking(null);
+
+      if (isOfflineMode) {
+        const booking = getOfflineBooking(searchId.trim().toUpperCase());
+        if (booking) {
+          setVerifiedBooking(booking);
+        } else {
+          setVerificationError("Keine Buchung mit dieser Ticket-Nummer gefunden. Bitte prüfen Sie Ihre Eingabe.");
+        }
+        return;
+      }
+
       const res = await fetch(`/api/bookings/${searchId.trim().toUpperCase()}`);
       if (res.ok) {
         const booking = await res.json();
         setVerifiedBooking(booking);
       } else {
-        setVerificationError("Keine Buchung mit dieser Ticket-Nummer gefunden. Bitte prüfen Sie Ihre Eingabe.");
+        const booking = getOfflineBooking(searchId.trim().toUpperCase());
+        if (booking) {
+          setVerifiedBooking(booking);
+        } else {
+          setVerificationError("Keine Buchung mit dieser Ticket-Nummer gefunden. Bitte prüfen Sie Ihre Eingabe.");
+        }
       }
     } catch (e) {
-      setVerificationError("Fehler beim Abrufen der Ticket-Daten.");
+      const booking = getOfflineBooking(searchId.trim().toUpperCase());
+      if (booking) {
+        setVerifiedBooking(booking);
+      } else {
+        setVerificationError("Fehler beim Abrufen der Ticket-Daten.");
+      }
     } finally {
       setSearchingVerification(false);
     }
@@ -293,7 +362,24 @@ export default function App() {
     if (!customPrompt) setUserInput("");
 
     try {
-      // Package recent messages for server-side processing
+      if (isOfflineMode) {
+        setTimeout(() => {
+          const response = getOfflineChatResponse(promptToSend);
+          setChatMessages(prev => [
+            ...prev,
+            {
+              id: Math.random().toString(),
+              role: "bot",
+              content: response,
+              timestamp: new Date(),
+              modelUsed: "Offline-Kundenservice-Modell"
+            }
+          ]);
+          setIsTyping(false);
+        }, 800);
+        return;
+      }
+
       const recentHistory = chatMessages
         .slice(-10) // keep reasonable context size
         .map(msg => ({ role: msg.role, content: msg.content }));
@@ -321,25 +407,28 @@ export default function App() {
           }
         ]);
       } else {
-        const err = await res.json();
+        const fallback = getOfflineChatResponse(promptToSend);
         setChatMessages(prev => [
           ...prev,
           {
             id: Math.random().toString(),
             role: "bot",
-            content: "Entschuldigung, es trat ein Fehler beim Abfragen des Support-Systems auf: " + err.error,
-            timestamp: new Date()
+            content: fallback,
+            timestamp: new Date(),
+            modelUsed: "Lokale Notfall-Engine"
           }
         ]);
       }
     } catch (error) {
+      const fallback = getOfflineChatResponse(promptToSend);
       setChatMessages(prev => [
         ...prev,
         {
           id: Math.random().toString(),
           role: "bot",
-          content: "Entschuldigung, ich konnte keine Verbindung zum Server herstellen.",
-          timestamp: new Date()
+          content: fallback,
+          timestamp: new Date(),
+          modelUsed: "Lokale Notfall-Engine"
         }
       ]);
     } finally {
