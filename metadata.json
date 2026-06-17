@@ -1,0 +1,8 @@
+{
+  "name": "IMAX",
+  "description": "Erleben Sie ein unvergessliches Kinoerlebnis mit modernster IMAX-Technologie. Buchen Sie Tickets online, waehlen Sie Ihre Lieblingsplaetze und geniessen Sie exklusive Sonderangebote.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

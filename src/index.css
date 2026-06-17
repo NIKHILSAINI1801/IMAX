@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "system-ui", "-apple-system", sans-serif;
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-serif: "Cinzel", serif;
+  --font-script: "Caveat", cursive;
+}
+
+/* Custom Cinema Animations & Styles */
+@keyframes pulse-gold {
+  0%, 100% {
+    text-shadow: 0 0 4px rgba(212, 175, 55, 0.4), 0 0 8px rgba(212, 175, 55, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.7), 0 0 20px rgba(212, 175, 55, 0.5);
+  }
+}
+
+@keyframes marquee-lights {
+  0%, 100% {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 2px #d4af37);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 6px #ffd700);
+  }
+}
+
+.animate-pulse-gold {
+  animation: pulse-gold 3s infinite ease-in-out;
+}
+
+.animate-marquee-lights {
+  animation: marquee-lights 1.5s infinite ease-in-out;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+/* Immersive background spotlights */
+.bg-cinema-spotlight {
+  background: radial-gradient(circle at 50% 10%, rgba(198, 40, 40, 0.15) 0%, transparent 60%);
+}
+
+.gold-border-glow {
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.15), inset 0 0 10px rgba(212, 175, 55, 0.05);
+}
+
+.red-border-glow {
+  box-shadow: 0 0 15px rgba(198, 40, 40, 0.2), inset 0 0 10px rgba(198, 40, 40, 0.1);
+}
