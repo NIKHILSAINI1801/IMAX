@@ -15,7 +15,7 @@ export interface Seat {
   id: string;
   row: string;
   number: number;
-  type: 'Standard' | 'Premium' | 'VIP';
+  type: 'Parkett' | 'Luxus' | 'Loge';
   price: number;
   booked: boolean;
 }
