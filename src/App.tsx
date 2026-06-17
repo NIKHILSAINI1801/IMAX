@@ -72,7 +72,7 @@ export default function App() {
     {
       id: "welcome",
       role: "bot",
-      content: "Hallo! Willkommen im IMAX Berlin. Ich bin dein digitaler Kinoservice-Assistent. Möchtest du Informationen zu unseren IMAX-Sälen, dem Eröffnungsangebot oder Unterstützung bei der Auswahl deines heutigen Films?",
+      content: "Hello! Welcome to IMAX. I am your digital cinema assistant. Would you like information about our IMAX screens, the opening special offer, or help selecting your movie for today?",
       timestamp: new Date()
     }
   ]);
@@ -153,7 +153,7 @@ export default function App() {
         setSeatMap(seats);
       }
     } catch (e) {
-      console.error("Fehler beim Laden des Sitzplans, weiche aus auf Offline-Sitzplan:", e);
+      console.error("Error loading seating chart, falling back to offline seating:", e);
       const seats = getOfflineSeats(movieId, showtimeId);
       setSeatMap(seats);
     } finally {
@@ -190,7 +190,7 @@ export default function App() {
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMovie || !selectedShowtime || selectedSeats.length === 0 || !customerName || !customerEmail) {
-      alert("Bitte füllen Sie alle erforderlichen Felder aus und wählen Sie mindestens einen Sitzplatz.");
+      alert("Please fill in all required fields and select at least one seat.");
       return;
     }
 
@@ -202,7 +202,7 @@ export default function App() {
         showtimeId: selectedShowtime.id,
         showtime: selectedShowtime.time,
         movieTitle: selectedMovie.title,
-        date: "Heute, " + new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }),
+        date: "Today, " + new Date().toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long" }),
         seats: selectedSeats,
         customerName,
         customerEmail,
@@ -225,7 +225,7 @@ export default function App() {
           {
             id: `booking-${booking.id}`,
             role: "bot",
-            content: `Vielen Dank für Ihre Buchung, ${customerName}! Ich habe Ihre ${selectedSeats.length} Tickets für "${selectedMovie.title}" (${selectedShowtime.time}) erfolgreich reserviert. Ihre Buchungsnummer lautet ${booking.id}. Sie können das Ticket hier direkt verifizieren lassen!`,
+            content: `Thank you for your booking, ${customerName}! I have successfully reserved your ${selectedSeats.length} ticket(s) for "${selectedMovie.title}" (${selectedShowtime.time}). Your booking number is ${booking.id}. You can verify your ticket directly in the Ticket Scanner tab!`,
             timestamp: new Date()
           }
         ]);
@@ -259,23 +259,23 @@ export default function App() {
           {
             id: `booking-${booking.id}`,
             role: "bot",
-            content: `Vielen Dank für Ihre Buchung, ${customerName}! Ich habe Ihre ${selectedSeats.length} Tickets für "${selectedMovie.title}" (${selectedShowtime.time}) erfolgreich reserviert. Ihre Buchungsnummer lautet ${booking.id}. Sie können das Ticket hier direkt verifizieren lassen!`,
+            content: `Thank you for your booking, ${customerName}! I have successfully reserved your ${selectedSeats.length} ticket(s) for "${selectedMovie.title}" (${selectedShowtime.time}). Your booking number is ${booking.id}. You can verify your ticket directly in the Ticket Scanner tab!`,
             timestamp: new Date()
           }
         ]);
       } else {
         const err = await res.json();
-        alert("Buchungsfehler: " + err.error);
+        alert("Booking Error: " + err.error);
       }
     } catch (error) {
-      console.warn("Zahlungsverbindungsfehler, weiche auf lokale Buchungssimulation aus:", error);
+      console.warn("Payment connection error, falling back to local simulation:", error);
       // Fallback booking
       const booking = createOfflineBooking({
         movieId: selectedMovie.id,
         showtimeId: selectedShowtime.id,
         showtime: selectedShowtime.time,
         movieTitle: selectedMovie.title,
-        date: "Heute, " + new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }),
+        date: "Today, " + new Date().toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long" }),
         seats: selectedSeats,
         customerName,
         customerEmail,
@@ -294,7 +294,7 @@ export default function App() {
         {
           id: `booking-${booking.id}`,
           role: "bot",
-          content: `Vielen Dank für Ihre Buchung, ${customerName}! Ich habe Ihre ${selectedSeats.length} Tickets für "${selectedMovie.title}" (${selectedShowtime.time}) erfolgreich offline reserviert. Ihre Buchungsnummer lautet ${booking.id}. Sie können das Ticket hier direkt verifizieren lassen!`,
+          content: `Thank you for your booking, ${customerName}! I have successfully reserved your ${selectedSeats.length} ticket(s) for "${selectedMovie.title}" (${selectedShowtime.time}) offline. Your booking number is ${booking.id}. You can verify your ticket directly in the Ticket Scanner tab!`,
           timestamp: new Date()
         }
       ]);
@@ -316,7 +316,7 @@ export default function App() {
         if (booking) {
           setVerifiedBooking(booking);
         } else {
-          setVerificationError("Keine Buchung mit dieser Ticket-Nummer gefunden. Bitte prüfen Sie Ihre Eingabe.");
+          setVerificationError("No booking found with this ticket number. Please check your input.");
         }
         return;
       }
@@ -330,7 +330,7 @@ export default function App() {
         if (booking) {
           setVerifiedBooking(booking);
         } else {
-          setVerificationError("Keine Buchung mit dieser Ticket-Nummer gefunden. Bitte prüfen Sie Ihre Eingabe.");
+          setVerificationError("No booking found with this ticket number. Please check your input.");
         }
       }
     } catch (e) {
@@ -338,7 +338,7 @@ export default function App() {
       if (booking) {
         setVerifiedBooking(booking);
       } else {
-        setVerificationError("Fehler beim Abrufen der Ticket-Daten.");
+        setVerificationError("Error retrieving ticket data.");
       }
     } finally {
       setSearchingVerification(false);
@@ -372,7 +372,7 @@ export default function App() {
               role: "bot",
               content: response,
               timestamp: new Date(),
-              modelUsed: "Offline-Kundenservice-Modell"
+              modelUsed: "Offline Customer Service Model"
             }
           ]);
           setIsTyping(false);
@@ -415,7 +415,7 @@ export default function App() {
             role: "bot",
             content: fallback,
             timestamp: new Date(),
-            modelUsed: "Lokale Notfall-Engine"
+            modelUsed: "Local Emergency Engine"
           }
         ]);
       }
@@ -428,7 +428,7 @@ export default function App() {
           role: "bot",
           content: fallback,
           timestamp: new Date(),
-          modelUsed: "Lokale Notfall-Engine"
+          modelUsed: "Local Emergency Engine"
         }
       ]);
     } finally {
@@ -460,7 +460,7 @@ export default function App() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 md:py-16 flex flex-col md:flex-row items-center justify-between gap-8">
           
-          {/* Top Left Badge - BESTE FILME. BESTES ERLEBNIS. */}
+          {/* Top Left Badge - BEST MOVIES. GREAT EXPERIENCE. */}
           <div className="flex-shrink-0 animate-bounce duration-1000" id="awards-badge-group">
             <div className="relative flex items-center justify-center w-36 h-36 rounded-full border-2 border-[#d4af37] bg-gradient-to-br from-[#c62828] to-[#800c0c] gold-border-glow p-2">
               {/* Inner dashed ring */}
@@ -468,10 +468,10 @@ export default function App() {
               {/* Content */}
               <div className="relative text-center flex flex-col items-center justify-center">
                 <span className="text-xl text-[#d4af37] font-bold leading-none mb-1">★</span>
-                <span className="text-[#ffd700] font-sans font-bold text-[13px] leading-[14px] tracking-wider">BESTE</span>
-                <span className="text-[#ffd700] font-sans font-extrabold text-[15px] leading-[15px] tracking-widest my-0.5">FILME.</span>
-                <span className="text-[#ffd700] font-sans font-medium text-[11px] leading-[12px] tracking-wide">BESTES</span>
-                <span className="text-[#ffd700] font-sans font-extrabold text-[12px] leading-[12px] tracking-wide">ERLEBNIS.</span>
+                <span className="text-[#ffd700] font-sans font-bold text-[13px] leading-[14px] tracking-wider">BEST</span>
+                <span className="text-[#ffd700] font-sans font-extrabold text-[15px] leading-[15px] tracking-widest my-0.5">MOVIES.</span>
+                <span className="text-[#ffd700] font-sans font-medium text-[11px] leading-[12px] tracking-wide">GREAT</span>
+                <span className="text-[#ffd700] font-sans font-extrabold text-[12px] leading-[12px] tracking-wide">EXPERIENCE.</span>
                 {/* Small laurel wreath accents or line below */}
                 <div className="w-10 h-0.5 bg-[#d4af37] mt-1.5" />
               </div>
@@ -488,11 +488,11 @@ export default function App() {
             </p>
           </div>
 
-          {/* Right Side German Slogan & 5 Stars */}
+          {/* Right Side English Slogan & 5 Stars */}
           <div className="max-w-xs text-center md:text-right flex flex-col items-center md:items-end gap-3" id="hero-marketing-quote">
             <blockquote className="text-base sm:text-[17px] font-medium leading-relaxed tracking-wide text-zinc-100">
-              Mehr als <span className="text-white font-semibold">nur ein Film – </span> 
-              <span className="block mt-1 text-[#ffd700] font-serif tracking-wider font-semibold italic text-xl">ein unvergessliches Erlebnis!</span>
+              More than <span className="text-white font-semibold">just a movie – </span> 
+              <span className="block mt-1 text-[#ffd700] font-serif tracking-wider font-semibold italic text-xl">an unforgettable experience!</span>
             </blockquote>
             {/* 5 Golden Stars */}
             <div className="flex gap-1 py-1" id="star-rating-display">
@@ -515,14 +515,13 @@ export default function App() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12" id="imax-bento-grid">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            
-            {/* 2. LEFT FEATURE PANEL – "WAS BIETEN WIR AN?" */}
+                   {/* 2. LEFT FEATURE PANEL – "WHAT WE OFFER" */}
             <section className="lg:col-span-4 flex flex-col bg-black/65 backdrop-blur-md rounded-2xl border border-zinc-900 overflow-hidden shadow-2xl" id="what-we-offer-panel">
               {/* Ribbon Header banner */}
               <div className="relative bg-gradient-to-r from-[#c62828] to-[#8c1c1c] px-6 py-4 shadow-md border-b border-[#d4af37]/30 flex items-center justify-between">
                 <div className="absolute top-0 right-0 h-full w-4 bg-[#d4af37] transform skew-x-12 translate-x-1 opacity-25" />
                 <h2 className="text-lg font-bold tracking-widest text-white uppercase font-heading">
-                  WAS BIETEN WIR AN?
+                  WHAT WE OFFER
                 </h2>
                 <div className="w-1.5 h-1.5 rounded-full bg-[#d4af37] animate-ping" />
               </div>
@@ -536,8 +535,8 @@ export default function App() {
                     <Clapperboard className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white tracking-wide">Neueste Filme aus aller Welt</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Blockbuster, Klassiker und mehr.</p>
+                    <h3 className="text-sm font-semibold text-white tracking-wide">The Latest Movies Worldwide</h3>
+                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Blockbusters, classics, and more.</p>
                   </div>
                 </div>
 
@@ -547,8 +546,8 @@ export default function App() {
                     3D
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white tracking-wide">IMAX- und 3D-Säle</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Für ein beeindruckendes Kinoerlebnis.</p>
+                    <h3 className="text-sm font-semibold text-white tracking-wide">IMAX & 3D Screening Rooms</h3>
+                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">For spectacular, life-sized visuals.</p>
                   </div>
                 </div>
 
@@ -558,8 +557,8 @@ export default function App() {
                     <Smartphone className="w-5 h-5 rotate-12" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white tracking-wide">Bequeme Luxussitze</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Mehr Platz, mehr Komfort.</p>
+                    <h3 className="text-sm font-semibold text-white tracking-wide">Comfortable Premium Recliners</h3>
+                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">More legroom, absolute luxury.</p>
                   </div>
                 </div>
 
@@ -569,8 +568,8 @@ export default function App() {
                     <Globe className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white tracking-wide">Online-Ticketbuchung</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Schnell, einfach und sicher über unsere App oder Website.</p>
+                    <h3 className="text-sm font-semibold text-white tracking-wide">Online Ticket Booking</h3>
+                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Fast, easy, and secure via our app or web.</p>
                   </div>
                 </div>
 
@@ -580,8 +579,8 @@ export default function App() {
                     <GraduationCap className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white tracking-wide">Günstige Studentenrabatte</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Mehr Filme, weniger Preis.</p>
+                    <h3 className="text-sm font-semibold text-white tracking-wide">Affordable Student Discounts</h3>
+                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">More movies, lower prices.</p>
                   </div>
                 </div>
 
@@ -592,8 +591,8 @@ export default function App() {
                     <span className="text-[9px] text-[#ffd700]">🍿</span>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white tracking-wide">Frisches Popcorn und Getränke</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Leckere Snacks für den perfekten Filmabend.</p>
+                    <h3 className="text-sm font-semibold text-white tracking-wide">Fresh Popcorn & Cold Drinks</h3>
+                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Delicious treats for the ultimate movie crew.</p>
                   </div>
                 </div>
 
@@ -603,15 +602,15 @@ export default function App() {
                     <Users className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white tracking-wide">Familien- und Freundesangebote</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Gemeinsam mehr sparen und genießen.</p>
+                    <h3 className="text-sm font-semibold text-white tracking-wide">Friends & Family Passes</h3>
+                    <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Enjoy together and optimize your budget.</p>
                   </div>
                 </div>
 
               </div>
             </section>
 
-            {/* 3. CENTER OFFER PANEL – "SONDERANGEBOT" */}
+            {/* 3. CENTER OFFER PANEL – "SPECIAL OFFER" */}
             <section className="lg:col-span-4 flex flex-col bg-zinc-950/80 rounded-2xl border-2 border-dashed border-[#d4af37] overflow-hidden shadow-2xl relative p-0.5" id="center-deal-marque">
               
               {/* Repeating glowing lights around border - marquee emulation */}
@@ -647,12 +646,12 @@ export default function App() {
                 
                 {/* Small Tag Header inside */}
                 <span className="text-zinc-400 tracking-[5px] text-[11px] font-bold uppercase py-0.5 px-3 rounded border border-zinc-800 bg-zinc-900/60 font-heading">
-                  SONDERANGEBOT
+                  SPECIAL OFFER
                 </span>
 
                 {/* Elegant Cursive Title */}
                 <h2 className="text-4xl text-white font-script px-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] filter font-bold">
-                  Eröffnungsangebot!
+                  Opening Offer!
                 </h2>
 
                 {/* 3 stars */}
@@ -661,13 +660,13 @@ export default function App() {
                 </div>
 
                 <div className="my-2 flex flex-col items-center" id="deal-content-body">
-                  <p className="text-zinc-300 font-bold tracking-widest text-[12px] uppercase">KAUFEN SIE</p>
+                  <p className="text-zinc-300 font-bold tracking-widest text-[12px] uppercase">BUY</p>
                   <p className="text-4xl font-extrabold text-white tracking-wider my-0.5 drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)] font-heading">
                     2 TICKETS
                   </p>
-                  <p className="text-zinc-300 font-bold tracking-widest text-[11px] uppercase mt-1">UND ERHALTEN SIE</p>
+                  <p className="text-zinc-300 font-bold tracking-widest text-[11px] uppercase mt-1">AND GET</p>
                   <p className="text-lg font-black text-[#ffd700] tracking-wider mt-1 underline decoration-dotted decoration-[#ffd700]/80">
-                    1 GETRÄNK KOSTENLOS!
+                    1 DRINK FREE!
                   </p>
                 </div>
 
@@ -720,16 +719,16 @@ export default function App() {
 
                 {/* Slogan cursive bottom right */}
                 <p className="text-white text-xl font-script ml-auto pr-2 mt-1 whitespace-nowrap leading-none filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                  Kino genießen und sparen!
+                  Enjoy cinema and save!
                 </p>
 
-                {/* Red Circular Seal Badge - NUR FÜR KURZE ZEIT! */}
+                {/* Red Circular Seal Badge - LIMITED TIME ONLY! */}
                 <div className="absolute right-0 top-16 rotate-12 z-25">
                   <div className="w-16 h-16 rounded-full bg-white border border-red-500 red-border-glow p-0.5 shadow-xl flex items-center justify-center text-center">
                     <div className="w-full h-full rounded-full border border-dashed border-red-500 flex flex-col items-center justify-center p-1 bg-stone-100">
                       <span className="text-red-600 text-[6px] font-bold leading-none select-none">★</span>
-                      <span className="text-red-700 font-extrabold text-[8px] leading-relaxed select-none tracking-tight">NUR FÜR</span>
-                      <span className="text-red-700 font-extrabold text-[8px] leading-relaxed select-none tracking-tight">KURZE ZEIT!</span>
+                      <span className="text-red-700 font-extrabold text-[8px] leading-relaxed select-none tracking-tight">LIMITED</span>
+                      <span className="text-red-700 font-extrabold text-[8px] leading-relaxed select-none tracking-tight">TIME ONLY!</span>
                       <span className="text-red-600 text-[6px] font-bold leading-none select-none">★</span>
                     </div>
                   </div>
@@ -757,8 +756,8 @@ export default function App() {
                     <Video className="w-5.5 h-5.5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-zinc-100 tracking-wide uppercase">Modernste Technologie</h3>
-                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">Für beste Bild- und Tonqualität.</p>
+                    <h3 className="text-sm font-semibold text-zinc-100 tracking-wide uppercase">Modern Screen Tech</h3>
+                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">For the finest visual & sonic fidelity.</p>
                   </div>
                 </div>
 
@@ -768,8 +767,8 @@ export default function App() {
                     <Volume2 className="w-5.5 h-5.5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-zinc-100 tracking-wide uppercase">Beste Bild- und Tonqualität</h3>
-                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">Kino wie in einer anderen Welt.</p>
+                    <h3 className="text-sm font-semibold text-zinc-100 tracking-wide uppercase">Immersive Audio</h3>
+                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">Soundscapes that transport you elsewhere.</p>
                   </div>
                 </div>
 
@@ -779,19 +778,19 @@ export default function App() {
                     <Smile className="w-5.5 h-5.5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-zinc-100 tracking-wide uppercase">Freundlicher Service</h3>
-                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">Ihr Wohl ist unser Ziel.</p>
+                    <h3 className="text-sm font-semibold text-zinc-100 tracking-wide uppercase">Friendly Support Staff</h3>
+                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">Your satisfaction is our primary goal.</p>
                   </div>
                 </div>
 
                 {/* Tech Item 4 */}
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-11 h-11 rounded-full bg-amber-500/10 border border-[#d4af37]/60 flex items-center justify-center text-[#ffd700] shadow-md mt-0.5 font-bold text-lg">
-                    €
+                    $
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-zinc-100 tracking-wide uppercase">Faire Preise</h3>
-                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">Top-Erlebnis zu fairen Preisen.</p>
+                    <h3 className="text-sm font-semibold text-zinc-100 tracking-wide uppercase">Honest Ticket Rates</h3>
+                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">First-class entertainment at balanced prices.</p>
                   </div>
                 </div>
 
@@ -801,8 +800,8 @@ export default function App() {
                     <MapPin className="w-5.5 h-5.5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-zinc-100 tracking-wide uppercase">Zentrale Lage</h3>
-                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">Leicht erreichbar mit Bus und Bahn.</p>
+                    <h3 className="text-sm font-semibold text-zinc-100 tracking-wide uppercase">Downtown Spot</h3>
+                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">Easily accessible via bus, metro, and rail.</p>
                   </div>
                 </div>
 
@@ -811,16 +810,16 @@ export default function App() {
 
           </div>
 
-          {/* DYNAMIC HUB DESIGN / ACTIVE WORKSPACE: Movie Browser & Selection */}
+          {/* DYNAMIC HUB DESIGN / ACTIVE WORKSPACE: Movie Selection */}
           <section className="mt-12 bg-zinc-950/90 rounded-2xl border border-zinc-900 p-6 md:p-8 relative shadow-3xl" id="movie-lobby-selection">
             <div className="absolute top-0 left-12 w-32 h-1 bg-gradient-to-r from-red-600 via-[#d4af37] to-transparent" />
             
             <div className="flex flex-col md:flex-row items-center justify-between border-b border-zinc-900 pb-5 mb-6 gap-4">
               <div>
                 <h2 className="text-2xl font-black uppercase text-white tracking-wider font-heading flex items-center gap-2">
-                  <span className="text-[#ffd700]">🎬</span> HEUTE IM IMAX PROGRAMM
+                  <span className="text-[#ffd700]">🎬</span> TODAY'S IMAX PROGRAM
                 </h2>
-                <p className="text-xs text-zinc-400 mt-1">Ausgewähltes Kinoprogramm für unvergessliche Erlebnisse.</p>
+                <p className="text-xs text-zinc-400 mt-1">Curated film schedule for unforgettable movie experiences.</p>
               </div>
               
               {/* Custom Action Router Tabs */}
@@ -831,7 +830,7 @@ export default function App() {
                     activeTab === "movies" ? "bg-red-700 text-white shadow-md" : "text-zinc-400 hover:text-white"
                   }`}
                 >
-                  Filmauswahl
+                  Movie Selection
                 </button>
                 <button 
                   onClick={() => setActiveTab("info")}
@@ -839,7 +838,7 @@ export default function App() {
                     activeTab === "info" ? "bg-red-700 text-white shadow-md" : "text-zinc-400 hover:text-white"
                   }`}
                 >
-                  IMAX Preise
+                  Ticket Prices
                 </button>
                 <button 
                   onClick={() => setActiveTab("verify")}
@@ -855,7 +854,7 @@ export default function App() {
             {loadingMovies ? (
               <div className="py-20 text-center text-zinc-500 flex flex-col items-center gap-3">
                 <div className="w-10 h-10 border-2 border-t-red-600 rounded-full animate-spin" />
-                <p>Kino-Daten werden geladen...</p>
+                <p>Loading cinema database...</p>
               </div>
             ) : (
               <div>
@@ -891,7 +890,7 @@ export default function App() {
 
                           <div className="mt-4 pt-4 border-t border-zinc-800/80">
                             <div className="flex items-center justify-between text-xs text-zinc-400">
-                              <span>Laufzeit: {movie.duration}</span>
+                              <span>Runtime: {movie.duration}</span>
                             </div>
 
                             {/* Showtimes selection */}
@@ -921,42 +920,42 @@ export default function App() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-4">
                     {/* Parkett */}
                     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
-                      <div className="text-zinc-500 uppercase font-black tracking-widest text-[10px]">Kategorie A</div>
-                      <h3 className="text-xl font-bold text-white mt-1">Parkett-Plätze</h3>
-                      <p className="text-xs text-zinc-400 mt-2">Klassische Kino-Bestuhlung im vorderen Kinosaalbereich. Perfekte Sicht für Action und Abenteuer.</p>
-                      <div className="text-2xl font-black text-[#ffd700] mt-4">12,00 EUR</div>
+                      <div className="text-zinc-500 uppercase font-black tracking-widest text-[10px]">Category A</div>
+                      <h3 className="text-xl font-bold text-white mt-1">Standard Seats</h3>
+                      <p className="text-xs text-zinc-400 mt-2">Polished ergonomic leather seating in the cinematic front rows. Immersive viewing angles for epic blockbusters.</p>
+                      <div className="text-2xl font-black text-[#ffd700] mt-4">$12.00</div>
                       <button 
                         onClick={() => { setActiveTab("movies"); }}
                         className="w-full mt-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold tracking-widest uppercase rounded text-white"
                       >
-                        Film Wählen
+                        Choose Film
                       </button>
                     </div>
                     {/* Luxus */}
                     <div className="bg-zinc-900 p-6 rounded-xl border border-[#d4af37]/45 relative">
                       <span className="absolute -top-3 right-4 bg-red-700 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Premium</span>
-                      <div className="text-zinc-400 uppercase font-black tracking-widest text-[10px]">Kategorie B</div>
-                      <h3 className="text-xl font-bold text-white mt-1">Luxussitze</h3>
-                      <p className="text-xs text-zinc-400 mt-2">Extra breite Sitze mit verstellbarer Rückenlehne im mittleren Bereich der Ränge für maximalen Komfort.</p>
-                      <div className="text-2xl font-black text-[#ffd700] mt-4">15,50 EUR</div>
+                      <div className="text-zinc-400 uppercase font-black tracking-widest text-[10px]">Category B</div>
+                      <h3 className="text-xl font-bold text-white mt-1">Premium Recliners</h3>
+                      <p className="text-xs text-zinc-400 mt-2">Extra-wide premium recliners with customizable motorized backrest controls for maximum comfort.</p>
+                      <div className="text-2xl font-black text-[#ffd700] mt-4">$15.50</div>
                       <button 
                         onClick={() => { setActiveTab("movies"); }}
                         className="w-full mt-4 py-2 bg-gradient-to-r from-red-700 to-red-800 hover:bg-red-600 text-xs font-bold tracking-widest uppercase rounded text-white"
                       >
-                        Film Wählen
+                        Choose Film
                       </button>
                     </div>
                     {/* VIP Loge */}
                     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
-                      <div className="text-zinc-500 uppercase font-black tracking-widest text-[10px]">Kategorie C</div>
-                      <h3 className="text-xl font-bold text-white mt-1">VIP Loge</h3>
-                      <p className="text-xs text-zinc-400 mt-2">Beste Akustik, luxuriöse Polstersitze in den obersten hinteren Reihen mit exklusivem Tischplatz und Einlassservice.</p>
-                      <div className="text-2xl font-black text-[#ffd700] mt-4">18,50 EUR</div>
+                      <div className="text-zinc-500 uppercase font-black tracking-widest text-[10px]">Category C</div>
+                      <h3 className="text-xl font-bold text-white mt-1">VIP Balcony Suite</h3>
+                      <p className="text-xs text-zinc-400 mt-2">Elite acoustic performance, state-of-the-art recliners inside top balcony rows, modular private tray tables, and personal butler service.</p>
+                      <div className="text-2xl font-black text-[#ffd700] mt-4">$18.50</div>
                       <button 
                         onClick={() => { setActiveTab("movies"); }}
                         className="w-full mt-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold tracking-widest uppercase rounded text-white"
                       >
-                        Film Wählen
+                        Choose Film
                       </button>
                     </div>
                   </div>
@@ -966,16 +965,16 @@ export default function App() {
                   <div className="max-w-xl mx-auto py-6" id="ticket-checker-panel">
                     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
                       <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                        <QrCode className="w-5 h-5 text-[#ffd700]" /> Ticket-Einlasskontrolle
+                        <QrCode className="w-5 h-5 text-[#ffd700]" /> Admissions Token Validation
                       </h3>
                       <p className="text-xs text-zinc-400 leading-relaxed">
-                        Nutzen Sie den Simulator, um Ihr mobiles PDF_Ticket verifizieren zu lassen. Geben Sie die 9-stellige Buchungsnummer ein (z. B. <strong>STK-XXXXXX</strong>), um den Sicherheitsstatus und Einlassberechtigungen anzuzeigen.
+                        Use this simulator to verify your mobile digital pass. Enter your 9-character code (e.g. <strong>IMX-XXXXXX</strong>) to scan security registers and check admission status.
                       </p>
                       
                       <div className="flex gap-2 mt-5">
                         <input 
                           type="text" 
-                          placeholder="z.B. STK-123456" 
+                          placeholder="e.g. IMX-123456" 
                           value={verificationId}
                           onChange={(e) => setVerificationId(e.target.value)}
                           className="bg-zinc-950 border border-zinc-800 px-4 py-2.5 rounded-md text-sm text-white focus:outline-none focus:border-[#d4af37] flex-grow text-center tracking-widest font-mono uppercase"
@@ -985,7 +984,7 @@ export default function App() {
                           disabled={searchingVerification}
                           className="bg-red-700 hover:bg-red-600 text-white disabled:bg-zinc-800 text-xs font-black tracking-widest uppercase px-6 rounded-md transition-all flex items-center gap-2"
                         >
-                          {searchingVerification ? "Prüft..." : "Ticket Prüfen"}
+                          {searchingVerification ? "Verifying..." : "Verify Ticket"}
                         </button>
                       </div>
 
@@ -999,25 +998,25 @@ export default function App() {
                         <div className="bg-emerald-950/20 border border-emerald-900/40 p-5 rounded-md mt-5 text-zinc-300">
                           <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm mb-3">
                             <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
-                            TICKET GÜLTIG – EINLASS GEWÄHRT
+                            TICKET VALID – ADMISSION GRANTED
                           </div>
                           
                           <div className="grid grid-cols-2 gap-4 text-xs">
                             <div>
-                              <div className="text-zinc-500">Film</div>
+                              <div className="text-zinc-500">Movie</div>
                               <div className="font-bold text-white">{verifiedBooking.movieTitle}</div>
                             </div>
                             <div>
-                              <div className="text-zinc-500">Sitzplätze</div>
+                              <div className="text-zinc-500">Reserved Seats</div>
                               <div className="font-bold text-[#ffd700] tracking-wide font-mono">{verifiedBooking.seats.join(", ")}</div>
                             </div>
                             <div>
-                              <div className="text-zinc-500">Vorstellung</div>
+                              <div className="text-zinc-500">Showtime</div>
                               <div className="font-bold text-white">{verifiedBooking.showtime}</div>
                             </div>
                             <div>
-                              <div className="text-zinc-500">Datum / Gast</div>
-                              <div className="font-bold text-white truncate">{verifiedBooking.customerName}</div>
+                              <div className="text-zinc-500">Date / Guest</div>
+                              <div className="font-[#ffd700] font-bold text-white truncate">{verifiedBooking.customerName}</div>
                             </div>
                           </div>
                         </div>
@@ -1055,13 +1054,13 @@ export default function App() {
                     
                     <div className="flex flex-col items-center flex-grow justify-center mt-3">
                       <span className="text-white text-xs font-black tracking-widest text-center leading-tight uppercase font-heading">
-                        JETZT
+                        BOOK
                       </span>
                       <span className="text-[#ffd700] text-[10px] font-bold tracking-widest text-center uppercase">
                         TICKETS
                       </span>
                       <span className="text-white text-xs font-black tracking-widest text-center uppercase leading-tight font-heading">
-                        BUCHEN!
+                        NOW!
                       </span>
                       <span className="text-[14px] text-[#ffd700] leading-none mt-1.5">★</span>
                     </div>
@@ -1086,9 +1085,9 @@ export default function App() {
                 {/* Right text of phone */}
                 <div className="flex flex-col gap-1.5" id="ticket-action-box">
                   <h3 className="text-[#ffd700] text-xl font-black uppercase tracking-wider font-heading leading-tight">
-                    JETZT TICKETS BUCHEN!
+                    BOOK YOUR TICKETS NOW!
                   </h3>
-                  <p className="text-xs text-zinc-400">Einfach. Schnell. Bequem.</p>
+                  <p className="text-xs text-zinc-400">Simple. Quick. Secure.</p>
                   
                   <div className="flex gap-2.5 mt-2" id="footer-ticket-channels">
                     <div className="flex flex-col items-center text-center">
@@ -1109,7 +1108,7 @@ export default function App() {
                       <div className="w-8 h-8 rounded-full bg-zinc-900 border border-[#d4af37]/40 flex items-center justify-center text-[#fffae0] text-xs">
                         🎟️
                       </div>
-                      <span className="text-[9px] uppercase font-bold text-zinc-400 mt-1">VOR ORT</span>
+                      <span className="text-[9px] uppercase font-bold text-zinc-400 mt-1">ON-SITE</span>
                     </div>
                   </div>
                 </div>
@@ -1138,9 +1137,9 @@ export default function App() {
                 {/* Followers layout text */}
                 <div className="text-center sm:text-left">
                   <h4 className="text-xs font-black text-white tracking-widest uppercase font-heading">
-                    FOLGEN SIE UNS!
+                    FOLLOW US!
                   </h4>
-                  <p className="text-[11px] text-zinc-400 mt-0.5 leading-relaxed">Bleiben Sie immer auf dem Laufenden.</p>
+                  <p className="text-[11px] text-zinc-400 mt-0.5 leading-relaxed">Stay up to date on special events.</p>
                   
                   {/* Social circle icons */}
                   <div className="flex justify-center sm:justify-start gap-2 mt-3" id="footer-social-hubs">
@@ -1178,7 +1177,7 @@ export default function App() {
             {/* Bottom red slogan bar across full width */}
             <div className="w-full pt-6 mt-4 text-center border-t border-zinc-900 bg-zinc-950" id="copyright-strip-bottom">
               <span className="text-[#ffd700] text-[13px] sm:text-sm tracking-[4px] uppercase font-serif animate-pulse-gold inline-flex items-center gap-1.5 font-semibold">
-                ★ IMAX – HIER BEGINNT DEIN FILMERLEBNIS! ★
+                ★ IMAX – WHERE MOVIES COME TO LIFE! ★
               </span>
             </div>
 
@@ -1207,9 +1206,9 @@ export default function App() {
                   </div>
                   <div>
                     <h3 className="text-xs font-bold uppercase tracking-widest text-[#ffd700] font-heading flex items-center gap-1">
-                      IMAX Kundenservice
+                      IMAX Customer Support
                     </h3>
-                    <p className="text-[10px] text-zinc-400 mt-0.5">Ihr digitaler IMAX Concierge</p>
+                    <p className="text-[10px] text-zinc-400 mt-0.5">Your digital IMAX Concierge</p>
                   </div>
                 </div>
                 <button 
@@ -1224,7 +1223,7 @@ export default function App() {
               <div className="bg-zinc-900 px-4 py-2 border-b border-zinc-800/60 flex items-center justify-between text-[10px] text-lime-500 uppercase font-bold tracking-widest">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse" />
-                  <span>Kinoservice Online</span>
+                  <span>Support Service Online</span>
                 </div>
                 <span className="text-zinc-500 text-[9px] font-mono">ID: IMX-SUPPORT</span>
               </div>
@@ -1246,7 +1245,7 @@ export default function App() {
                       {msg.content}
                     </div>
                     <span className="text-[7px] text-zinc-500 mt-1 uppercase tracking-wider font-mono select-none">
-                      {msg.role === "user" ? "Sie" : "Support-Team"} • {new Date(msg.timestamp || Date.now()).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}
+                      {msg.role === "user" ? "You" : "Support Staff"} • {new Date(msg.timestamp || Date.now()).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
                     </span>
                   </div>
                 ))}
@@ -1256,7 +1255,7 @@ export default function App() {
                     <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                     <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
                     <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                    <span className="text-[10px] ml-1">Kinoservice schreibt...</span>
+                    <span className="text-[10px] ml-1">Customer support is typing...</span>
                   </div>
                 )}
                 
@@ -1266,22 +1265,22 @@ export default function App() {
               {/* Suggested Quick Prompts */}
               <div className="px-3 py-2 bg-zinc-900/40 border-t border-zinc-800/50 flex flex-wrap gap-1">
                 <button 
-                  onClick={() => sendMessageToBot(undefined, "Welche IMAX Filme laufen heute?")}
+                  onClick={() => sendMessageToBot(undefined, "Which movies are showing today?")}
                   className="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 text-[10px] hover:text-white"
                 >
-                  🎬 Verügbare Filme
+                  🎬 Available Movies
                 </button>
                 <button 
-                  onClick={() => sendMessageToBot(undefined, "Gibt es ein Eröffnungsangebot?")}
+                  onClick={() => sendMessageToBot(undefined, "Are there any opening deals?")}
                   className="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 text-[10px] hover:text-white"
                 >
-                  🍿 Eröffnungsangebot
+                  🍿 Opening Specials
                 </button>
                 <button 
-                  onClick={() => sendMessageToBot(undefined, "Vergünstigungen für Studenten?")}
+                  onClick={() => sendMessageToBot(undefined, "Are there discounts for students?")}
                   className="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 text-[10px] hover:text-white"
                 >
-                  🎓 Studentenrabatt?
+                  🎓 Student Discounts
                 </button>
               </div>
 
@@ -1289,7 +1288,7 @@ export default function App() {
               <form onSubmit={sendMessageToBot} className="p-3 bg-zinc-950 border-t border-zinc-800 flex gap-2">
                 <input 
                   type="text" 
-                  placeholder="Schreiben Sie eine Nachricht..."
+                  placeholder="Type a message..."
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
                   className="bg-zinc-900 border border-zinc-800 px-3 py-2 rounded-lg text-xs flex-grow focus:outline-none focus:border-[#d4af37] text-white"
@@ -1332,7 +1331,7 @@ export default function App() {
                 {/* Header info */}
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-zinc-500 uppercase font-black text-[9px] tracking-widest font-heading">SITZPLATZ-KONFIGURATOR</span>
+                    <span className="text-zinc-500 uppercase font-black text-[9px] tracking-widest font-heading">SEATING LAYOUT NAVIGATOR</span>
                     <button 
                       onClick={() => setIsBookingOpen(false)}
                       className="text-zinc-500 hover:text-white md:hidden"
@@ -1349,7 +1348,7 @@ export default function App() {
                         <span>•</span>
                         <span className="text-[#ffd700] font-bold">{selectedShowtime.time}</span>
                         <span>•</span>
-                        <span>Laufzeit: {selectedMovie.duration}</span>
+                        <span>Runtime: {selectedMovie.duration}</span>
                       </div>
                     </div>
                   )}
@@ -1358,14 +1357,14 @@ export default function App() {
                   <div className="mt-8 flex flex-col items-center select-none">
                     {/* Visual glowing line of curve screen */}
                     <div className="w-[85%] h-2 bg-gradient-to-r from-red-700/10 via-zinc-200 to-red-700/10 rounded-full shadow-[0_0_12px_rgba(255,255,255,0.7)]" />
-                    <span className="text-[9px] tracking-[6px] text-zinc-500 uppercase mt-2 select-none leading-none">LEINWAND / SCREEN</span>
+                    <span className="text-[9px] tracking-[6px] text-zinc-500 uppercase mt-2 select-none leading-none">FRONT SCREEN / BALCONY DIRECTION</span>
                   </div>
 
                   {/* Seat Map Selections */}
                   <div className="mt-8 overflow-x-auto pb-4">
                     {loadingSeats ? (
                       <div className="py-12 text-center text-xs text-zinc-500">
-                        Sitzplatzmatrix wird generiert...
+                        Generating seating configuration matrices...
                       </div>
                     ) : (
                       <div className="min-w-[420px] mx-auto flex flex-col gap-1.5" id="seating-chart-grid">
@@ -1391,9 +1390,9 @@ export default function App() {
                                     bgClass = "bg-[#d4af37] border-amber-400 text-black";
                                   } else {
                                     // Categories highlights
-                                    if (seat.type === "Loge") bgClass = "bg-amber-950/40 border-amber-900/80 text-amber-300 hover:bg-amber-900/60";
-                                    if (seat.type === "Luxus") bgClass = "bg-red-950/30 border-red-950/80 text-red-300 hover:bg-red-900/40";
-                                    if (seat.type === "Parkett") bgClass = "bg-zinc-900 border-zinc-800 text-zinc-400 hover:bg-zinc-800";
+                                    if (seat.type === "VIP" || seat.type === "Loge") bgClass = "bg-amber-950/40 border-amber-900/80 text-amber-300 hover:bg-amber-900/60";
+                                    if (seat.type === "Premium" || seat.type === "Luxus") bgClass = "bg-red-950/30 border-red-950/80 text-red-300 hover:bg-red-900/40";
+                                    if (seat.type === "Standard" || seat.type === "Parkett") bgClass = "bg-zinc-900 border-zinc-800 text-zinc-400 hover:bg-zinc-800";
                                   }
 
                                   return (
@@ -1401,7 +1400,7 @@ export default function App() {
                                       key={seat.id}
                                       disabled={seat.booked}
                                       onClick={() => toggleSeat(seat.id)}
-                                      title={`Sitz ${seat.id} (${seat.type}): ${seat.price.toFixed(2)}€`}
+                                      title={`Seat ${seat.id} (${seat.type}): $${seat.price.toFixed(2)}`}
                                       className={`w-6.5 h-6.5 rounded text-[8px] font-bold border transition-all flex items-center justify-center font-sans tracking-tighter ${bgClass}`}
                                     >
                                       {seat.booked ? "×" : seat.number}
@@ -1424,23 +1423,23 @@ export default function App() {
                   <div className="mt-4 flex flex-wrap justify-center gap-4 text-[10px] text-zinc-400 pb-2 border-b border-zinc-900">
                     <div className="flex items-center gap-1.5">
                       <div className="w-3.5 h-3.5 rounded bg-zinc-900 border border-zinc-800" />
-                      <span>Parkett (12,00 €)</span>
+                      <span>Standard ($12.00)</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-3.5 h-3.5 rounded bg-red-950/30 border border-red-950/80" />
-                      <span>Luxus (15,50 €)</span>
+                      <span>Premium ($15.50)</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-3.5 h-3.5 rounded bg-amber-950/40 border border-amber-900/80" />
-                      <span>Loge VIP (18,50 €)</span>
+                      <span>VIP Balcony ($18.50)</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-3.5 h-3.5 rounded bg-[#d4af37] border border-amber-400" />
-                      <span>Ausgewählt</span>
+                      <span>Selected</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-3.5 h-3.5 rounded bg-stone-900 flex items-center justify-center font-bold text-[8px] text-zinc-850 border border-zinc-950">×</div>
-                      <span>Verkauft</span>
+                      <span>Sold</span>
                     </div>
                   </div>
 
@@ -1448,9 +1447,9 @@ export default function App() {
 
                 {/* Slogan footnote */}
                 <div className="hidden md:flex gap-2 items-center text-zinc-500 mt-6 md:mt-2 text-[10px]" id="booking-seal-footnote">
-                  <span>🥇 Beste IMAX Bildschirme in Deutschland</span>
+                  <span>🥇 Leading IMAX Canvas Experience</span>
                   <span>•</span>
-                  <span>🔒 SSL Verschlüsselte Transaktion</span>
+                  <span>🔒 SSL Secured Checkout</span>
                 </div>
 
               </div>
@@ -1459,7 +1458,7 @@ export default function App() {
               <div className="w-full md:w-2/5 p-5 md:p-7 bg-zinc-900/30 flex flex-col justify-between">
                 
                 <div className="flex items-center justify-between pb-3 border-b border-zinc-900">
-                  <span className="text-zinc-400 uppercase font-black text-[10px] tracking-widest font-heading">Kasse / Buchung</span>
+                  <span className="text-zinc-400 uppercase font-black text-[10px] tracking-widest font-heading">Checkout / Booking</span>
                   <button 
                     onClick={() => setIsBookingOpen(false)}
                     className="text-zinc-400 hover:text-white hidden md:block"
@@ -1475,34 +1474,34 @@ export default function App() {
                       <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto mb-3">
                         <Check className="w-6 h-6 animate-pulse" />
                       </div>
-                      <h3 className="text-base font-bold text-white">RESERVIERUNG BESTÄTIGT!</h3>
-                      <p className="text-xs text-zinc-400 mt-1">Ihr mobiles Einlass-Ticket wurde generiert.</p>
+                      <h3 className="text-base font-bold text-white">RESERVATION CONFIRMED!</h3>
+                      <p className="text-xs text-zinc-400 mt-1">Your mobile digital pass has been generated.</p>
                     </div>
 
                     <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800/80 flex flex-col gap-3 font-sans" id="success-recepit-canvas">
                       <div className="flex justify-between border-b border-zinc-900 pb-2 text-[11px]">
-                        <span className="text-zinc-500">Buchungs-Nr.</span>
+                        <span className="text-zinc-500">Booking Ref.</span>
                         <span className="font-bold text-[#ffd700] tracking-wider font-mono uppercase">{bookingSuccess.id}</span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-zinc-500">Film</span>
+                        <span className="text-zinc-500">Movie</span>
                         <span className="font-bold text-white">{bookingSuccess.movieTitle}</span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-zinc-500">Sitze</span>
+                        <span className="text-zinc-500">Seats</span>
                         <span className="font-bold text-[#ffd700] font-mono tracking-wide">{bookingSuccess.seats.join(", ")}</span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-zinc-500">Zeit / Ticket</span>
+                        <span className="text-zinc-500">Time / Ticket</span>
                         <span className="font-bold text-white">{bookingSuccess.showtime} ({bookingSuccess.ticketType})</span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-zinc-500">Kunde / Gast</span>
+                        <span className="text-zinc-500">Customer / Guest</span>
                         <span className="font-bold text-white truncate max-w-[140px]">{bookingSuccess.customerName}</span>
                       </div>
                       <div className="flex justify-between border-t border-zinc-900 pt-3 mt-1 text-sm font-black">
-                        <span className="text-zinc-400">Gesamtpreis</span>
-                        <span className="text-emerald-400">{bookingSuccess.total.toFixed(2)} EUR</span>
+                        <span className="text-zinc-400">Total Price</span>
+                        <span className="text-emerald-400">${bookingSuccess.total.toFixed(2)} USD</span>
                       </div>
                     </div>
 
@@ -1548,8 +1547,8 @@ export default function App() {
                           />
                           {/* Hover tooltip hint */}
                           <div className="absolute inset-0 bg-black/85 text-white opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl flex flex-col items-center justify-center p-2 text-center">
-                            <span className="text-[#ffd700] text-[11px] font-bold">Einlass simulieren</span>
-                            <span className="text-[8px] text-zinc-400 mt-1">Hier klicken zum Ticket-Scan</span>
+                            <span className="text-[#ffd700] text-[11px] font-bold">Simulate Entry Scan</span>
+                            <span className="text-[8px] text-zinc-400 mt-1">Click here to scan admission ticket</span>
                           </div>
                         </div>
 
@@ -1572,7 +1571,7 @@ export default function App() {
                           {copied ? (
                             <>
                               <span className="text-xs">✓</span>
-                              <span>KOPIERT / COPIED!</span>
+                              <span>COPIED!</span>
                             </>
                           ) : (
                             <>
@@ -1590,7 +1589,7 @@ export default function App() {
                           <span className="font-mono tracking-widest font-black italic text-zinc-100 text-sm">UPI</span>
                           <span className="text-[8px] text-[#ffd700] font-bold uppercase tracking-widest">Unified Payments Interface</span>
                         </div>
-                        <span className="text-[7px] text-zinc-500 font-medium">Bequeme Direktüberweisung von jedem Bankkonto</span>
+                        <span className="text-[7px] text-zinc-500 font-medium">Instant secure mobile transfer from any bank account</span>
                       </div>
 
                     </div>
@@ -1599,7 +1598,7 @@ export default function App() {
                       onClick={() => setIsBookingOpen(false)}
                       className="w-full py-2.5 bg-red-700 hover:bg-red-600 text-white font-bold text-xs uppercase tracking-widest rounded-lg mt-3"
                     >
-                      Fertig / Schließen
+                      Done / Close
                     </button>
                   </div>
                 ) : (
@@ -1609,35 +1608,35 @@ export default function App() {
                     {/* Itemized receipt calculations preview */}
                     <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-900 flex flex-col gap-2.5">
                       <div className="flex justify-between text-xs">
-                        <span className="text-zinc-500">Ausgewählte Plätze</span>
+                        <span className="text-zinc-500">Selected Seats</span>
                         <span className="font-bold text-[#ffd750] font-mono tracking-wide">
-                          {selectedSeats.length > 0 ? selectedSeats.join(", ") : "Keine"}
+                          {selectedSeats.length > 0 ? selectedSeats.join(", ") : "None"}
                         </span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-zinc-500">Zwischensumme</span>
-                        <span className="text-zinc-300">{subtotal.toFixed(2)} EUR</span>
+                        <span className="text-zinc-500">Subtotal</span>
+                        <span className="text-zinc-300">${subtotal.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between text-xs text-red-400">
-                        <span className="flex items-center gap-1">Studentenrabatt {ticketType === "Student" && "aktiv"}</span>
-                        <span>-{discount.toFixed(2)} EUR</span>
+                        <span className="flex items-center gap-1">Student Discount {ticketType === "Student" && "active"}</span>
+                        <span>-${discount.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between border-t border-zinc-900 pt-3 mt-1.5 text-sm font-black">
-                        <span className="text-zinc-300">Gesamtbetrag (EUR)</span>
-                        <span className="text-[#ffd700]">{total.toFixed(2)} EUR</span>
+                        <span className="text-zinc-350">Total Amount (USD)</span>
+                        <span className="text-[#ffd700]">${total.toFixed(2)} USD</span>
                       </div>
                     </div>
 
                     {/* Form Controls */}
                     <div className="flex flex-col gap-3">
                       <div>
-                        <label className="block text-[10px] text-zinc-400 uppercase tracking-widest mb-1">Kunden-Name *</label>
+                        <label className="block text-[10px] text-zinc-400 uppercase tracking-widest mb-1">Customer Name *</label>
                         <div className="relative">
                           <User className="absolute left-3 top-2.5 w-3.5 h-3.5 text-zinc-500" />
                           <input 
                             type="text" 
                             required
-                            placeholder="Z.B. Michael Schmidt" 
+                            placeholder="e.g. Michael Smith" 
                             value={customerName}
                             onChange={(e) => setCustomerName(e.target.value)}
                             className="w-full bg-zinc-950 border border-zinc-800 text-xs text-white pl-9 pr-3 py-2.5 rounded focus:outline-none focus:border-[#d4af37]"
@@ -1646,13 +1645,13 @@ export default function App() {
                       </div>
 
                       <div>
-                        <label className="block text-[10px] text-zinc-400 uppercase tracking-widest mb-1">E-Mail-Adresse *</label>
+                        <label className="block text-[10px] text-zinc-400 uppercase tracking-widest mb-1">Email Address *</label>
                         <div className="relative">
                           <Mail className="absolute left-3 top-2.5 w-3.5 h-3.5 text-zinc-500" />
                           <input 
                             type="email" 
                             required
-                            placeholder="ihre-mail@imax-berlin.de" 
+                            placeholder="customer@example.com" 
                             value={customerEmail}
                             onChange={(e) => setCustomerEmail(e.target.value)}
                             className="w-full bg-zinc-950 border border-zinc-800 text-xs text-white pl-9 pr-3 py-2.5 rounded focus:outline-none focus:border-[#d4af37]"
@@ -1662,7 +1661,7 @@ export default function App() {
 
                       {/* Ticket Type select radio */}
                       <div>
-                        <span className="block text-[10px] text-zinc-400 uppercase tracking-widest mb-1.5">Tarif Option</span>
+                        <span className="block text-[10px] text-zinc-400 uppercase tracking-widest mb-1.5">Ticket Tier</span>
                         <div className="grid grid-cols-2 gap-2">
                           <button
                             type="button"
@@ -1680,17 +1679,17 @@ export default function App() {
                               ticketType === "Student" ? "bg-red-700/20 border-red-650 text-white" : "bg-zinc-950 border-zinc-850 text-zinc-400 hover:text-white"
                             }`}
                           >
-                            <GraduationCap className="w-3.5 h-3.5" /> Student (-2€)
+                            <GraduationCap className="w-3.5 h-3.5" /> Student (-$2)
                           </button>
                         </div>
                       </div>
 
                       {/* Payment SDK integrations choice */}
                       <div>
-                        <span className="block text-[10px] text-zinc-400 uppercase tracking-widest mb-1.5">Zahlungsmittel</span>
+                        <span className="block text-[10px] text-zinc-400 uppercase tracking-widest mb-1.5">Payment Method</span>
                         <div className="grid grid-cols-4 gap-1.5 text-[9px] font-bold text-center">
                           {[
-                            { name: "Stripe", label: "Karte", icon: "💳" },
+                            { name: "Stripe", label: "Card", icon: "💳" },
                             { name: "PayPal", label: "PayPal", icon: "🅿️" },
                             { name: "GooglePay", label: "G-Pay", icon: "📱" },
                             { name: "ApplePay", label: "Apple", icon: "🍏" }
@@ -1721,11 +1720,11 @@ export default function App() {
                       {submittingBooking ? (
                         <>
                           <div className="w-3.5 h-3.5 border border-t-black rounded-full animate-spin" />
-                          <span>Zahlung wird autorisiert...</span>
+                          <span>Authorizing transaction...</span>
                         </>
                       ) : (
                         <>
-                          <span>KOSTENPFLICHTIG BUCHEN</span>
+                          <span>CONFIRM & PURCHASE</span>
                           <ArrowRight className="w-4 h-4" />
                         </>
                       )}

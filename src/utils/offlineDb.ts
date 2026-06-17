@@ -4,55 +4,55 @@ export const INITIAL_MOVIES: ClientMovie[] = [
   {
     id: "m1",
     title: "Dune: Part Two",
-    genre: "Science-Fiction / Sci-Fi",
+    genre: "Sci-Fi / Adventure",
     duration: "166 Min.",
-    rating: "FSK 12",
+    rating: "PG-13",
     banner: "https://images.unsplash.com/photo-1547483238-f400e65ccd56?auto=format&fit=crop&w=1200&q=80",
-    description: "Der legendäre Kampf um Arrakis geht in die nächste Runde. Erleben Sie Paul Atreides' Schicksal auf der gigantischen IMAX-Leinwand mit atemberaubendem Sound.",
+    description: "The legendary struggle for Arrakis continues. Experience Paul Atreides' destiny on the massive IMAX screen with breathtaking immersive sound.",
     showtimes: [
-      { id: "s1_1", time: "16:30 Uhr" },
-      { id: "s1_2", time: "19:45 Uhr (IMAX 3D)" },
-      { id: "s1_3", time: "22:15 Uhr" }
+      { id: "s1_1", time: "4:30 PM" },
+      { id: "s1_2", time: "7:45 PM (IMAX 3D)" },
+      { id: "s1_3", time: "10:15 PM" }
     ]
   },
   {
     id: "m2",
     title: "Oppenheimer",
-    genre: "Drama / Biografie",
+    genre: "Drama / Biography",
     duration: "180 Min.",
-    rating: "FSK 12",
+    rating: "R",
     banner: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=80",
-    description: "Der epische Meilenstein von Christopher Nolan über das Manhattan-Projekt und den Vater der Atombombe. Spektakulär gefilmt in nativem IMAX 70mm.",
+    description: "Christopher Nolan's epic masterpiece about the Manhattan Project and the father of the atomic bomb. Spectacularly filmed in native IMAX 70mm.",
     showtimes: [
-      { id: "m2_1", time: "16:00 Uhr" },
-      { id: "m2_2", time: "20:00 Uhr (IMAX 70mm)" }
+      { id: "m2_1", time: "4:00 PM" },
+      { id: "m2_2", time: "8:00 PM (IMAX 70mm)" }
     ]
   },
   {
     id: "m3",
     title: "Interstellar",
-    genre: "Sci-Fi / Abenteuer",
+    genre: "Sci-Fi / Drama",
     duration: "169 Min.",
-    rating: "FSK 12",
+    rating: "PG-13",
     banner: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
-    description: "Der visuelle Meilenstein kehrt zurück auf die Leinwand. Eine emotionale Reise durch Raum und Zeit jenseits unserer Galaxie.",
+    description: "The visual masterpiece returns to the big screen. An emotional journey through space and time beyond our galaxy.",
     showtimes: [
-      { id: "m3_1", time: "17:00 Uhr" },
-      { id: "m3_2", time: "21:00 Uhr (IMAX Special)" }
+      { id: "m3_1", time: "5:00 PM" },
+      { id: "m3_2", time: "9:00 PM (IMAX Special)" }
     ]
   },
   {
     id: "m4",
     title: "Gladiator II",
-    genre: "Action / Historie",
+    genre: "Action / History",
     duration: "148 Min.",
-    rating: "FSK 16",
+    rating: "R",
     banner: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=1200&q=80",
-    description: "Jahrzehnte nach dem Tod von Maximus tritt Lucius in das Kolosseum ein, um das Schicksal Roms neu zu schmieden. Gewaltiges Historienkino.",
+    description: "Decades after the death of Maximus, Lucius enters the Colosseum to forge a new destiny for Rome. Monumental historical cinema.",
     showtimes: [
-      { id: "m4_1", time: "15:00 Uhr" },
-      { id: "m4_2", time: "18:15 Uhr" },
-      { id: "m4_3", time: "21:30 Uhr" }
+      { id: "m4_1", time: "3:00 PM" },
+      { id: "m4_2", time: "6:15 PM" },
+      { id: "m4_3", time: "9:30 PM" }
     ]
   }
 ];
@@ -61,13 +61,13 @@ function generateSeatsHelper(): Seat[] {
   const seats: Seat[] = [];
   const rows = ['A', 'B', 'C', 'D', 'E', 'F'];
   rows.forEach(row => {
-    let type: 'Parkett' | 'Luxus' | 'Loge' = 'Parkett';
+    let type: 'Standard' | 'Premium' | 'VIP' = 'Standard';
     let price = 12.00;
     if (row === 'A' || row === 'B') {
-      type = 'Loge';
+      type = 'VIP';
       price = 18.50;
     } else if (row === 'C' || row === 'D') {
-      type = 'Luxus';
+      type = 'Premium';
       price = 15.50;
     }
 
@@ -141,7 +141,7 @@ export function createOfflineBooking(bookingData: {
     id: bookingId,
     ...bookingData,
     qrCodeUrl,
-    timestamp: new Date().toLocaleString("de-DE")
+    timestamp: new Date().toLocaleString("en-US")
   };
 
   const storedBookings = localStorage.getItem("imax_offline_bookings");
@@ -162,89 +162,89 @@ export function getOfflineBooking(id: string): Booking | null {
 export function getOfflineChatResponse(message: string): string {
   const msg = message.toLowerCase();
   
-  if (msg.includes("hallo") || msg.includes("hi ") || msg.includes("hey") || msg.includes("guten tag") || msg.includes("servus") || msg.includes("moin")) {
-    return `Hallo! Ich bin dein IMAX Support-Assistent. 🍿 
+  if (msg.includes("hello") || msg.includes("hi ") || msg.includes("hey") || msg.includes("greetings") || msg.includes("welcome")) {
+    return `Hello! I am your IMAX support assistant. 🍿 
 
-Gerne helfe ich dir weiter! Du kannst mich fragen zu:
-- Unserem aktuellen Filmprogramm (z.B. **Dune: Part Two**, **Oppenheimer**, **Interstellar** oder **Gladiator II**)
-- Unserem exklusiven **Eröffnungsangebot**
-- Den Ticketpreisen (Parkett, Luxussitze, Loge) oder Sitzplatzoptionen
-- Den unterstützten Zahlungsmethoden.
+I'm happy to help! You can ask me about:
+- Our current movie programming (e.g., **Dune: Part Two**, **Oppenheimer**, **Interstellar**, or **Gladiator II**)
+- Our exclusive **opening special offer**
+- Ticket prices (Standard, Premium, VIP) or seat options
+- Supported payment methods.
 
-Wie kann ich dir heute eine Freude bereiten?`;
+How can I bring you joy in your cinema experience today?`;
   }
   
-  if (msg.includes("angebot") || msg.includes("eröffnung") || msg.includes("aktion") || msg.includes("gratis") || msg.includes("getränk") || msg.includes("sparen") || msg.includes("student")) {
-    return `🎉 **Unser exklusives Eröffnungsangebot:**
-Kaufen Sie **2 Tickets** Ihrer Wahl und erhalten Sie **1 Getränk völlig kostenlos** dazu! 
-Dieses Angebot gilt nur für kurze Zeit unter dem Slogan: *"Kino genießen und sparen!"*
+  if (msg.includes("offer") || msg.includes("opening") || msg.includes("promotion") || msg.includes("free") || msg.includes("drink") || msg.includes("save") || msg.includes("deal")) {
+    return `🎉 **Our exclusive Opening Offer:**
+Buy **2 tickets** of your choice and get **1 drink completely free**! 
+This offer is available for a limited time under the motto: *"Enjoy cinema and save!"*
 
-Zusätzlich erhalten Schüler und Studenten einen Rabatt von **2,00 EUR** auf jedes gebuchte Ticket! Wähle dafür im Online-Zahlungsauswahl einfach die Option "Student" aus.`;
+Additionally, students receive a discount of **$2.00** on every booked ticket! Simply select the "Student" tariff option during checkout.`;
   }
   
-  if (msg.includes("film") || msg.includes("programm") || msg.includes("kino") || msg.includes("vorstellung") || msg.includes("zeiten") || msg.includes("heute") || msg.includes("dune") || msg.includes("oppenheimer") || msg.includes("interstellar") || msg.includes("gladiator")) {
-    let reply = `🎬 **Heute im IMAX Programm:**\n\n`;
+  if (msg.includes("movie") || msg.includes("program") || msg.includes("theater") || msg.includes("cinema") || msg.includes("show") || msg.includes("time") || msg.includes("today") || msg.includes("dune") || msg.includes("oppenheimer") || msg.includes("interstellar") || msg.includes("gladiator")) {
+    let reply = `🎬 **Today's IMAX Movie Program:**\n\n`;
     
     if (msg.includes("dune")) {
-      reply += `🏜️ **Dune: Part Two** (FSK 12 | 166 Min.)\nDer epische Kampf um Arrakis. Vorstellungen heute um:\n- 16:30 Uhr\n- 19:45 Uhr (IMAX 3D)\n- 22:15 Uhr`;
+      reply += `🏜️ **Dune: Part Two** (PG-13 | 166 Min.)\nThe epic battle for Arrakis. Screenings today at:\n- 4:30 PM\n- 7:45 PM (IMAX 3D)\n- 10:15 PM`;
     } else if (msg.includes("oppenheimer")) {
-      reply += `⚛️ **Oppenheimer** (FSK 12 | 180 Min.)\nChristopher Nolans Meisterwerk über den Erfinder der Atombombe. Vorstellungen:\n- 16:00 Uhr\n- 20:00 Uhr (IMAX 70mm)`;
+      reply += `⚛️ **Oppenheimer** (R | 180 Min.)\nChristopher Nolan's masterpiece about the creator of the atomic bomb. Screenings:\n- 4:00 PM\n- 8:00 PM (IMAX 70mm)`;
     } else if (msg.includes("interstellar")) {
-      reply += `🌌 **Interstellar** (FSK 12 | 169 Min.)\nDer visuell atemberaubende Klassiker zurück auf großer Leinwand!\n- 17:00 Uhr\n- 21:00 Uhr (IMAX Special)`;
+      reply += `🌌 **Interstellar** (PG-13 | 169 Min.)\nThe visually stunning classic returns to the big screen!\n- 5:00 PM\n- 9:00 PM (IMAX Special)`;
     } else if (msg.includes("gladiator")) {
-      reply += `⚔️ **Gladiator II** (FSK 16 | 148 Min.)\nDas packende Sequel des legendären Historienepos.\n- 15:00 Uhr\n- 18:15 Uhr\n- 21:30 Uhr`;
+      reply += `⚔️ **Gladiator II** (R | 148 Min.)\nThe thrilling sequel of the legendary historical epic.\n- 3:00 PM\n- 6:15 PM\n- 9:30 PM`;
     } else {
-      reply += `1️⃣ **Dune: Part Two** (Sci-Fi, FSK 12)\n   🕒 16:30 Uhr | 19:45 Uhr (IMAX 3D) | 22:15 Uhr\n\n`;
-      reply += `2️⃣ **Oppenheimer** (Biografie, FSK 12)\n   🕒 16:00 Uhr | 20:00 Uhr (IMAX 70mm)\n\n`;
-      reply += `3️⃣ **Interstellar** (Abenteuer, FSK 12)\n   🕒 17:00 Uhr | 21:00 Uhr (IMAX Special)\n\n`;
-      reply += `4️⃣ **Gladiator II** (Historie, FSK 16)\n   🕒 15:00 Uhr | 18:15 Uhr | 21:30 Uhr\n\n`;
-      reply += `Tipp: Klicke einfach auf eine gewünschte Uhrzeit auf unserer Webseite, um direkt zur interaktiven Sitzplatzreservierung zu gelangen!`;
+      reply += `1️⃣ **Dune: Part Two** (Sci-Fi, PG-13)\n   🕒 4:30 PM | 7:45 PM (IMAX 3D) | 10:15 PM\n\n`;
+      reply += `2️⃣ **Oppenheimer** (Biography, R)\n   🕒 4:00 PM | 8:00 PM (IMAX 70mm)\n\n`;
+      reply += `3️⃣ **Interstellar** (Adventure, PG-13)\n   🕒 5:00 PM | 9:00 PM (IMAX Special)\n\n`;
+      reply += `4️⃣ **Gladiator II** (History, R)\n   🕒 3:00 PM | 6:15 PM | 9:30 PM\n\n`;
+      reply += `Tip: Simply click on your preferred showtime on our website to access the interactive seat reservation!`;
     }
     return reply;
   }
   
-  if (msg.includes("preis") || msg.includes("preise") || msg.includes("kostet") || msg.includes("ticket") || msg.includes("sitz") || msg.includes("sitze") || msg.includes("loge") || msg.includes("luxus") || msg.includes("parkett")) {
-    return `🎟️ **Unsere Ticket- und Sitzplatzkategorien:**
+  if (msg.includes("price") || msg.includes("cost") || msg.includes("ticket") || msg.includes("seat") || msg.includes("vip") || msg.includes("premium") || msg.includes("standard")) {
+    return `🎟️ **Our Ticket and Seat Categories:**
 
-1. **Parkett** - 12,00 EUR (Klassische komfortable Bestuhlung im vorderen Saalbereich)
-2. **Luxussitze** - 15,50 EUR (Extra breite Wohlfühlsessel mit verstellbarer Rückenlehne)
-3. **VIP Loge** - 18,50 EUR (Hintere exklusive Reihen mit bester Akustik & Tischplatz)
+1. **Standard** - $12.00 (Classic comfortable seating in the front section)
+2. **Premium** - $15.50 (Extra wide premium recliners in the middle section)
+3. **VIP** - $18.50 (Exclusive back rows with optimal acoustics & table space)
 
-*Hinweis:* Bei Buchung als Student werden **2,00 EUR Rabatt** automatisch abgezogen!`;
+*Note:* Booking as a student automatically applies a **$2.00 discount** per ticket!`;
   }
   
-  if (msg.includes("bezahl") || msg.includes("zahlen") || msg.includes("stripe") || msg.includes("paypal") || msg.includes("karte") || msg.includes("apple") || msg.includes("google")) {
-    return `💳 **Sichere und schnelle Online-Zahlung:**
+  if (msg.includes("pay") || msg.includes("checkout") || msg.includes("stripe") || msg.includes("paypal") || msg.includes("card") || msg.includes("apple") || msg.includes("google")) {
+    return `💳 **Secure and Instant Online Payment:**
 
-Wir unterstützen die folgenden modernen Zahlungsmethoden direkt bei der Buchung:
-- **Stripe** (Bequemes Bezahlen per Kreditkarte)
+We support the following modern payment methods directly during checkout:
+- **Stripe** (Convenient credit card payment)
 - **PayPal**
 - **Google Pay**
 - **Apple Pay**
 
-Nach erfolgreicher Buchung wird dir sofort ein **mobiler QR-Code** generiert, welchen du am Einlass für den kontaktlosen Zutritt scannen lassen kannst.`;
+Upon successful booking, a **mobile QR code ticket** will be immediately generated for you to scan for contactless entry.`;
   }
   
-  if (msg.includes("lage") || msg.includes("ort") || msg.includes("adresse") || msg.includes("bus") || msg.includes("bahn") || msg.includes("wo") || msg.includes("parken")) {
-    return `📍 **Zentrale Lage & Erreichbarkeit:**
+  if (msg.includes("location") || msg.includes("address") || msg.includes("where") || msg.includes("direction") || msg.includes("bus") || msg.includes("train") || msg.includes("parking")) {
+    return `📍 **Central Location & Easy Access:**
 
-Wir befinden uns im Herzen der Stadt und sind hervorragend angebunden! 
-- **Öffentliche Verkehrsmittel:** Leicht erreichbar mit Bus und allen U-Bahnen (Haltestelle *IMAX / Am Kinopark* direkt vor der Haustür).
-- **Auto:** Parkplätze stehen in unserem eigenen, 24h geöffneten Parkhaus für Kinogäste kostenlos zur Verfügung.`;
+We are situated right in the city center with excellent transit connections!
+- **Public Transit:** Easily reachable by bus and all subway lines (stop: *IMAX / Kinopark* right outside).
+- **By Car:** Free parking spaces are available for cinema guests in our multi-story parking garage open 24/7.`;
   }
   
-  if (msg.includes("technologie") || msg.includes("sound") || msg.includes("ton") || msg.includes("bild") || msg.includes("imax") || msg.includes("3d")) {
-    return `🔊 **Technologieführer: Erleben Sie IMAX!**
+  if (msg.includes("tech") || msg.includes("sound") || msg.includes("laser") || msg.includes("screen") || msg.includes("3d")) {
+    return `🔊 **World-Class technology: Feel it in IMAX!**
 
-Unser Kinosaal verfügt über:
-- Die größte IMAX-Leinwand der Region mit kristallklarer Laserprojektion.
-- Next-Generation 12-Kanal-Immersive-Sound für spürbare Bässe und perfekten Raumklang.
-- Ergonomisch ausgerichtete Luxussitze für optimalen Blickwinkel aus jeder Reihe.
-- Neueste, federleichte 3D-Brillen für eine flimmerfreie Tiefenwirkung.`;
+Our custom cinema hall boasts:
+- The region's largest IMAX screen featuring crystal-clear laser projection.
+- Next-generation 12-channel immersive audio for intense, room-shaking sound.
+- Ergonomically placed VIP, Premium, and Standard seating with perfect viewing angles.
+- High-grade, featherlight 3D glasses for crisp depth and rich colors.`;
   }
 
-  return `Vielen Dank für deine Nachricht! 😊 
-Ich bin dein IMAX Support-Assistent. Gerne lade ich dich ein, das Kinoprogramm auf unserer Webseite zu durchstöbern oder direkt einen Sitzplatz für heute zu buchen.
+  return `Thank you for your message! 😊 
+I is your digital IMAX assistant. I invite you to browse our movie catalog or directly reserve custom seating configurations for today.
 
-Haben Sie Fragen zu den Vorstellungszeiten der Filme (z.B. **Dune** oder **Gladiator II**), zu unserem tollen **Eröffnungsangebot** oder den **Ticketpreisen**? Fragen Sie mich einfach!`;
+Do you have any questions regarding movie showtimes (e.g., **Dune** or **Gladiator II**), our special **opening offer**, or **ticket prices**? Ask away!`;
 }
