@@ -26,7 +26,8 @@ import {
   CheckCircle,
   HelpCircle,
   BrainCircuit,
-  ArrowRight
+  ArrowRight,
+  Sofa
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -484,7 +485,7 @@ export default function App() {
               IMAX
             </h1>
             <p className="text-sm sm:text-lg tracking-[8px] text-[#d4af37] py-2 font-light uppercase text-center ml-2">
-              FEEL IT IN IMAX
+              SPÜRE ES IN IMAX
             </p>
           </div>
 
@@ -555,10 +556,12 @@ export default function App() {
                 {/* Item 3 */}
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-zinc-950 border border-[#d4af37]/40 flex items-center justify-center text-[#d4af37] shadow-inner mt-0.5">
-                    <Smartphone className="w-5 h-5 rotate-12" />
+                    <Sofa className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white tracking-wide">Bequeme Luxussitze</h3>
+                    <h3 className="text-sm font-semibold text-white tracking-wide">
+                      Bequeme Luxussitze
+                    </h3>
                     <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">Mehr Platz, mehr Komfort.</p>
                   </div>
                 </div>
